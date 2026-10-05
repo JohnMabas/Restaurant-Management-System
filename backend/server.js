@@ -5,7 +5,7 @@ require("dotenv").config();
 const sequelize = require("./config/database");
 
 // Load models and associations
-require("./models");
+require("./models"); 
 
 // Import routes
 const userRoutes = require("./routes/userRoutes");
