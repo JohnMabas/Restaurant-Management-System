@@ -135,9 +135,17 @@ Serve `dist/` with any static file server, pointing `/api` at your backend.
 React (port 5173)  →  Vite Proxy  →  Express API (port 5000)  →  PostgreSQL
 ```
 
-### 1. Frontend makes API calls via Axios (`src/services/api.js`)
+---
 
-An Axios instance is created with `baseURL: '/api'` — a relative path, not hardcoded to any server:
+### 1. The Frontend Never Talks to the Backend Directly (in Development)
+
+When you run `npm run dev` in the frontend, Vite starts a dev server on **port 5173**. When that server makes an API call, it goes to `/api/...` — a relative URL, not `http://localhost:5000`. So the browser only ever talks to port 5173. Vite is the middleman.
+
+---
+
+### 2. Axios — The HTTP Client (`src/services/api.js`)
+
+All API calls in the frontend go through a single Axios instance:
 
 ```js
 const api = axios.create({
@@ -146,9 +154,24 @@ const api = axios.create({
 });
 ```
 
-Every function in `api.js` (e.g. `getOrders()`, `createMenuItem()`) calls this instance. Pages import these functions and use them to read/write data.
+`baseURL: '/api'` means every call is relative:
+- `api.get('/orders')` → hits `/api/orders`
+- `api.post('/menu-items', data)` → hits `/api/menu-items`
 
-### 2. Vite dev server proxies `/api` to the backend (`vite.config.js`)
+The functions are exported and used by React pages:
+
+```js
+export const getOrders    = ()         => api.get('/orders');
+export const createOrder  = (data)     => api.post('/orders', data);
+export const updateOrder  = (id, data) => api.put(`/orders/${id}`, data);
+export const deleteOrder  = (id)       => api.delete(`/orders/${id}`);
+```
+
+A page like `Orders.jsx` simply imports and calls `getOrders()` — it has no knowledge of ports or servers.
+
+---
+
+### 3. Vite Proxy — The Bridge (`vite.config.js`)
 
 ```js
 server: {
@@ -161,42 +184,115 @@ server: {
 },
 ```
 
-When the frontend makes a request to `/api/orders`, Vite intercepts it and forwards it to `http://localhost:5000/api/orders`. This is why there are no CORS issues in development — the browser never talks to port 5000 directly.
+This is the critical glue in development. When a request hits `/api/*` on port 5173, Vite:
+1. Intercepts the request before it leaves the dev server
+2. Forwards it to `http://localhost:5000/api/*`
+3. Returns the response back to the browser
 
-### 3. Express handles the routes (`server.js`)
+So `GET /api/orders` on port 5173 becomes `GET http://localhost:5000/api/orders` behind the scenes. The browser sees it as same-origin, so there are zero CORS issues.
+
+---
+
+### 4. Express — Route Handling (`server.js`)
+
+The backend receives the forwarded request. Express is set up like this:
 
 ```js
-app.use(cors());
-app.use('/api/users', userRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/menu-items', menuItemRoutes);
-app.use('/api/orders', orderRoutes);
+app.use(cors());               // Allow cross-origin (needed in production)
+app.use(express.json());       // Parse JSON request bodies
+
+app.use('/api/users',       userRoutes);
+app.use('/api/categories',  categoryRoutes);
+app.use('/api/menu-items',  menuItemRoutes);
+app.use('/api/orders',      orderRoutes);
 app.use('/api/order-items', orderItemRoutes);
 ```
 
-Each route maps to a controller that queries the database. `cors()` is also enabled for direct calls and production use.
+Each `app.use()` delegates to a dedicated router file. For example, a `GET /api/orders` request gets routed to `orderRoutes.js`, which calls the appropriate controller function.
 
-### 4. Backend connects to PostgreSQL (`config/database.js`)
+---
+
+### 5. Controllers — The Business Logic
+
+Controllers sit between routes and the database. Example from `orderController.js`:
+
+```js
+// GET /api/orders
+exports.getAllOrders = async (req, res) => {
+  const orders = await Order.findAll({ include: [OrderItem, User] });
+  res.json(orders);
+};
+```
+
+They use Sequelize models to query PostgreSQL, then send back JSON. The frontend receives that JSON via Axios and renders it.
+
+---
+
+### 6. Sequelize + PostgreSQL — The Data Layer (`config/database.js`)
 
 ```js
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
+  process.env.DB_NAME,      // restaurant_db
+  process.env.DB_USER,      // postgres
   process.env.DB_PASSWORD,
-  { host: process.env.DB_HOST, port: process.env.DB_PORT, dialect: 'postgres' }
+  {
+    host: process.env.DB_HOST,   // localhost
+    port: process.env.DB_PORT,   // 5432
+    dialect: 'postgres',
+    logging: false,
+  }
 );
 ```
 
-Credentials are loaded from `backend/.env`. Sequelize authenticates the connection before the server starts listening.
+Sequelize is an ORM — it maps JavaScript model classes (`Order`, `MenuItem`, etc.) to PostgreSQL tables. Credentials come from `backend/.env` and are never exposed to the frontend. Before the server starts listening, it calls `sequelize.authenticate()` to verify the DB connection is live.
+
+---
+
+### Full Request Lifecycle — Example: Loading the Orders Page
+
+```
+1. User navigates to /orders in the browser
+
+2. React renders Orders.jsx, which calls getOrders()
+
+3. getOrders() → axios.get('/api/orders')
+   → browser sends GET /api/orders to port 5173
+
+4. Vite proxy intercepts it
+   → forwards to GET http://localhost:5000/api/orders
+
+5. Express matches app.use('/api/orders', orderRoutes)
+   → orderRoutes calls orderController.getAllOrders()
+
+6. Controller calls Order.findAll({ include: [...] })
+   → Sequelize translates to SQL: SELECT * FROM orders JOIN ...
+
+7. PostgreSQL executes the query, returns rows
+
+8. Sequelize maps rows → JavaScript objects
+
+9. Controller sends res.json(orders) back to Express
+
+10. Express responds to Vite proxy with JSON
+
+11. Vite proxy returns JSON to the browser
+
+12. Axios resolves the promise with the data
+
+13. React sets state, component re-renders with the orders list
+```
+
+---
 
 ### Connection Layer Summary
 
-| Layer | Tool | Key detail |
-|---|---|---|
-| Frontend HTTP | Axios | `baseURL: '/api'` (relative path) |
-| Dev proxy | Vite | `/api` → `http://localhost:5000` |
-| Backend routing | Express | Registers all `/api/*` routes |
-| ORM / DB | Sequelize + PostgreSQL | Credentials from `backend/.env` |
+| # | Layer | Technology | Role |
+|---|---|---|---|
+| 1 | HTTP Client | Axios | Makes requests from React using relative `/api` URLs |
+| 2 | Dev Bridge | Vite Proxy | Forwards `/api/*` from port 5173 → port 5000 |
+| 3 | Web Server | Express | Receives requests, routes them to controllers |
+| 4 | Business Logic | Controllers | Queries DB, formats responses |
+| 5 | ORM | Sequelize | Translates JS model calls → SQL queries |
+| 6 | Database | PostgreSQL | Stores and retrieves all data |
 
 > **Note:** The Vite proxy is only active during development (`npm run dev`). In production, you need a reverse proxy (e.g. Nginx) to forward `/api` requests to the backend, since the Vite dev server is not used for production builds.
-# Restaurant-Management-System

@@ -103,7 +103,7 @@ export default function MenuPage() {
         <h1 className="text-2xl font-bold text-gray-800">🍽️ Menu Items</h1>
         <button
           onClick={openAdd}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
+          className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
         >
           + Add Item
         </button>
@@ -114,7 +114,7 @@ export default function MenuPage() {
         <button
           onClick={() => setFilter('all')}
           className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-            filter === 'all' ? 'bg-orange-500 text-white border-orange-500' : 'border-gray-300 text-gray-600 hover:bg-gray-100'
+            filter === 'all' ? 'bg-teal-600 text-white border-teal-600' : 'border-gray-300 text-gray-600 hover:bg-gray-100'
           }`}
         >
           All ({items.length})
@@ -127,7 +127,7 @@ export default function MenuPage() {
               onClick={() => setFilter(String(cat.id))}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                 filter === String(cat.id)
-                  ? 'bg-orange-500 text-white border-orange-500'
+                  ? 'bg-teal-600 text-white border-teal-600'
                   : 'border-gray-300 text-gray-600 hover:bg-gray-100'
               }`}
             >
@@ -157,7 +157,7 @@ export default function MenuPage() {
                   )}
                 </div>
                 {item.category && (
-                  <span className="text-xs text-orange-600 font-medium">{item.category.name}</span>
+                  <span className="text-xs text-teal-600 font-medium">{item.category.name}</span>
                 )}
                 {item.description && (
                   <p className="text-sm text-gray-500 mt-2 line-clamp-2">{item.description}</p>
@@ -197,7 +197,7 @@ export default function MenuPage() {
               <input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                 placeholder="e.g. Margherita Pizza"
               />
             </div>
@@ -206,7 +206,7 @@ export default function MenuPage() {
               <textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                 rows={3}
                 placeholder="Optional description…"
               />
@@ -220,7 +220,7 @@ export default function MenuPage() {
                   step="0.01"
                   value={form.price}
                   onChange={(e) => setForm({ ...form, price: e.target.value })}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                   placeholder="0.00"
                 />
               </div>
@@ -229,7 +229,7 @@ export default function MenuPage() {
                 <select
                   value={form.categoryId}
                   onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                 >
                   <option value="">Select…</option>
                   {categories.map((c) => (
@@ -243,7 +243,7 @@ export default function MenuPage() {
                 type="checkbox"
                 checked={form.available}
                 onChange={(e) => setForm({ ...form, available: e.target.checked })}
-                className="w-4 h-4 accent-orange-500"
+                className="w-4 h-4 accent-teal-600"
               />
               Available
             </label>
@@ -258,7 +258,7 @@ export default function MenuPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+                className="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-lg text-sm font-medium disabled:opacity-50"
               >
                 {saving ? 'Saving…' : editing ? 'Save Changes' : 'Add Item'}
               </button>

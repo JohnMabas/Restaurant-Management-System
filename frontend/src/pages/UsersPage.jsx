@@ -90,7 +90,7 @@ export default function UsersPage() {
         <h1 className="text-2xl font-bold text-gray-800">👥 Users</h1>
         <button
           onClick={openAdd}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
+          className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
         >
           + Add User
         </button>
@@ -153,7 +153,7 @@ export default function UsersPage() {
               <input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                 placeholder="Full name"
               />
             </div>
@@ -163,7 +163,7 @@ export default function UsersPage() {
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                 placeholder="email@example.com"
               />
             </div>
@@ -175,7 +175,7 @@ export default function UsersPage() {
                 type="password"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
                 placeholder={editing ? 'Leave blank to keep current password' : 'Min 8 characters'}
               />
             </div>
@@ -190,7 +190,7 @@ export default function UsersPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+                className="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-lg text-sm font-medium disabled:opacity-50"
               >
                 {saving ? 'Saving…' : editing ? 'Save Changes' : 'Create User'}
               </button>

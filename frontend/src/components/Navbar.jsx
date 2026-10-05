@@ -10,7 +10,7 @@ const links = [
 
 export default function Navbar() {
   return (
-    <nav className="bg-orange-600 text-white shadow-md">
+    <nav className="bg-teal-700 text-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
         <span className="text-xl font-bold tracking-wide">🍴 RestaurantMS</span>
         <ul className="flex gap-2">
@@ -22,8 +22,8 @@ export default function Navbar() {
                 className={({ isActive }) =>
                   `px-3 py-2 rounded text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-white text-orange-600'
-                      : 'hover:bg-orange-500'
+                      ? 'bg-white text-teal-700'
+                      : 'hover:bg-teal-600'
                   }`
                 }
               >

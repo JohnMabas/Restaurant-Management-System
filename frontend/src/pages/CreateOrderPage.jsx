@@ -89,7 +89,7 @@ export default function CreateOrderPage() {
             <select
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
             >
               <option value="">— Select a customer —</option>
               {users.map((u) => (
@@ -105,7 +105,7 @@ export default function CreateOrderPage() {
             <button
               onClick={() => setCatFilter('all')}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                catFilter === 'all' ? 'bg-orange-500 text-white border-orange-500' : 'border-gray-300 text-gray-600 hover:bg-gray-100'
+                catFilter === 'all' ? 'bg-teal-600 text-white border-teal-600' : 'border-gray-300 text-gray-600 hover:bg-gray-100'
               }`}
             >
               All
@@ -115,7 +115,7 @@ export default function CreateOrderPage() {
                 key={cat.id}
                 onClick={() => setCatFilter(String(cat.id))}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                  catFilter === String(cat.id) ? 'bg-orange-500 text-white border-orange-500' : 'border-gray-300 text-gray-600 hover:bg-gray-100'
+                  catFilter === String(cat.id) ? 'bg-teal-600 text-white border-teal-600' : 'border-gray-300 text-gray-600 hover:bg-gray-100'
                 }`}
               >
                 {cat.name}
@@ -131,13 +131,13 @@ export default function CreateOrderPage() {
                 <div
                   key={item.id}
                   className={`bg-white rounded-xl border shadow-sm p-4 flex flex-col gap-2 transition-all ${
-                    qty > 0 ? 'border-orange-400 ring-1 ring-orange-300' : ''
+                    qty > 0 ? 'border-teal-500 ring-1 ring-teal-200' : ''
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="font-medium text-gray-800 leading-tight">{item.name}</p>
-                      <p className="text-xs text-orange-600">{item.category?.name}</p>
+                      <p className="text-xs text-teal-600">{item.category?.name}</p>
                       {item.description && (
                         <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{item.description}</p>
                       )}
@@ -160,12 +160,12 @@ export default function CreateOrderPage() {
                     <button
                       type="button"
                       onClick={() => setQty(item.id, qty + 1)}
-                      className="w-7 h-7 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg leading-none flex items-center justify-center"
+                      className="w-7 h-7 rounded-full bg-teal-600 hover:bg-teal-700 text-white font-bold text-lg leading-none flex items-center justify-center"
                     >
                       +
                     </button>
                     {qty > 0 && (
-                      <span className="ml-auto text-xs text-orange-600 font-medium">
+                      <span className="ml-auto text-xs text-teal-600 font-medium">
                         ₦{(parseFloat(item.price) * qty).toFixed(2)}
                       </span>
                     )}
@@ -207,7 +207,7 @@ export default function CreateOrderPage() {
             <button
               onClick={handleSubmit}
               disabled={submitting || cartItems.length === 0 || !userId}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2.5 rounded-lg font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2.5 rounded-lg font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {submitting ? 'Placing Order…' : 'Place Order'}
             </button>

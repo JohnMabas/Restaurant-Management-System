@@ -10,7 +10,7 @@ import UsersPage from './pages/UsersPage';
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-slate-100">
         <Navbar />
         <main className="pb-12">
           <Routes>

@@ -83,7 +83,7 @@ export default function OrdersPage() {
             <tbody>
               {orders.map((order, idx) => (
                 <tr key={order.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td className="px-5 py-3 font-semibold text-orange-600">#{order.id}</td>
+                  <td className="px-5 py-3 font-semibold text-teal-600">#{order.id}</td>
                   <td className="px-5 py-3 text-gray-700">
                     <div>{order.user?.name ?? '—'}</div>
                     <div className="text-xs text-gray-400">{order.user?.email}</div>
@@ -174,7 +174,7 @@ export default function OrdersPage() {
               <select
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
@@ -191,7 +191,7 @@ export default function OrdersPage() {
               <button
                 onClick={handleStatusSave}
                 disabled={saving}
-                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+                className="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-lg text-sm font-medium disabled:opacity-50"
               >
                 {saving ? 'Saving…' : 'Update'}
               </button>
