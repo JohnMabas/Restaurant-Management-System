@@ -1,0 +1,508 @@
+{
+  "info": {
+    "name": "Restaurant Management System",
+    "description": "Complete API collection for the Restaurant Management System.\n\nBase URL is stored in the `baseUrl` collection variable (default: http://localhost:5000/api).\n\nWorkflow tip:\n1. Create a Category → note the returned `id`\n2. Create a Menu Item using that `categoryId`\n3. Create a User\n4. Create an Order using the `userId` and `menuItemId`\n5. Update the Order status as it progresses",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Users",
+      "description": "CRUD operations for restaurant users / customers.",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            },
+            "description": "Returns all users. Passwords are excluded from the response."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "1"]
+            },
+            "description": "Returns a single user by their ID. Returns 404 if not found."
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Johnson\",\n  \"email\": \"alice@example.com\",\n  \"password\": \"secret123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            },
+            "description": "Creates a new user. All three fields are required. Email must be unique. Password is hashed with bcrypt before storage.\n\nReturns 201 on success, 400 if fields are missing, 409 if email already exists."
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Smith\",\n  \"email\": \"alice.smith@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "1"]
+            },
+            "description": "Partially updates a user. All fields (name, email, password) are optional — only include what you want to change.\n\nReturns 404 if user not found."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "1"]
+            },
+            "description": "Permanently deletes a user. Returns 404 if not found.\n\nNote: will fail if the user has associated orders (foreign key constraint)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "description": "CRUD operations for menu categories (e.g. Starters, Mains, Desserts, Drinks).",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            },
+            "description": "Returns all categories ordered alphabetically by name."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "1"]
+            },
+            "description": "Returns a single category by ID. Returns 404 if not found."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Starters\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            },
+            "description": "Creates a new category. `name` is required and must be unique.\n\nReturns 201 on success, 400 if name is missing, 409 if name already exists."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Appetisers\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "1"]
+            },
+            "description": "Updates the name of an existing category. `name` is required.\n\nReturns 404 if not found."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "1"]
+            },
+            "description": "Permanently deletes a category. Returns 404 if not found.\n\nNote: will fail if menu items still reference this category (foreign key constraint)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Menu Items",
+      "description": "CRUD operations for menu items. Each item belongs to a category.",
+      "item": [
+        {
+          "name": "Get All Menu Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu-items",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items"]
+            },
+            "description": "Returns all menu items ordered by name, each with its nested category object (id, name)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Menu Item by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu-items/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items", "1"]
+            },
+            "description": "Returns a single menu item with its nested category. Returns 404 if not found."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Menu Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryId\": 1,\n  \"name\": \"Margherita Pizza\",\n  \"description\": \"Classic tomato and mozzarella pizza with fresh basil\",\n  \"price\": 11.99,\n  \"available\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menu-items",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items"]
+            },
+            "description": "Creates a new menu item.\n\nRequired fields: `categoryId`, `name`, `price`\nOptional fields: `description`, `available` (defaults to true)\n\nReturns 400 if required fields are missing or price is negative.\nReturns 404 if `categoryId` does not exist."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Menu Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 12.99,\n  \"available\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menu-items/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items", "1"]
+            },
+            "description": "Partially updates a menu item. All fields are optional — only include what you want to change.\n\nReturns 404 if item or categoryId not found.\nReturns 400 if price is negative."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Menu Item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu-items/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu-items", "1"]
+            },
+            "description": "Permanently deletes a menu item. Returns 404 if not found.\n\nNote: will fail if the item appears in existing order_items (foreign key constraint)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "description": "CRUD operations for orders. Creating an order automatically creates all order_items in a single database transaction.",
+      "item": [
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"]
+            },
+            "description": "Returns all orders (newest first), each with nested user details and the full list of order items (including the menu item name and price for each)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "1"]
+            },
+            "description": "Returns a single order with full nested detail (user + items + menu item info).\n\nReturns 404 if not found."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"items\": [\n    { \"menuItemId\": 1, \"quantity\": 2 },\n    { \"menuItemId\": 3, \"quantity\": 1 },\n    { \"menuItemId\": 5, \"quantity\": 2 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"]
+            },
+            "description": "Creates a new order inside a database transaction.\n\nRequired: `userId` (integer) and `items` array (at least one element).\nEach item requires `menuItemId` and `quantity` (must be > 0).\n\nThe API automatically:\n- Looks up the current price of each menu item\n- Rejects unavailable items\n- Calculates `totalAmount`\n- Creates all `order_items` rows\n\nReturns 201 with the full created order on success.\nReturns 400 for missing/invalid fields.\nReturns 404 if user or any menu item is not found.\nRolls back the entire transaction on any error."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "1"]
+            },
+            "description": "Updates the status of an order.\n\nAllowed status values:\n- pending\n- confirmed\n- preparing\n- ready\n- completed\n- cancelled\n\nReturns 400 if the status value is not one of the above.\nReturns 404 if order not found."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "1"]
+            },
+            "description": "Permanently deletes an order and (via cascade) its order items.\n\nReturns 404 if order not found."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order Items",
+      "description": "Read and manage individual line items within an order. Order items are created automatically when you POST to /orders — use these endpoints to inspect or adjust individual lines afterwards.",
+      "item": [
+        {
+          "name": "Get All Order Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/order-items",
+              "host": ["{{baseUrl}}"],
+              "path": ["order-items"]
+            },
+            "description": "Returns every order item across all orders, each with nested menu item info (id, name, price) and order info (id, userId, status)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order Item by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/order-items/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["order-items", "1"]
+            },
+            "description": "Returns a single order item with nested menu item and order info.\n\nReturns 404 if not found."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Item Quantity",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order-items/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["order-items", "1"]
+            },
+            "description": "Updates the quantity of a single order item line.\n\n`quantity` must be greater than 0.\n\nReturns 400 if quantity is missing or <= 0.\nReturns 404 if order item not found."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Order Item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/order-items/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["order-items", "1"]
+            },
+            "description": "Removes a single line item from an order.\n\nReturns 404 if not found."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
